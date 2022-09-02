@@ -16,7 +16,11 @@ def upload_readings():
   logging.info(f"> uploading cached readings to {server}")
 
   mqtt_client = MQTTClient(nickname, server, user=username, password=password, keepalive=60)
-  mqtt_client.connect()
+  try:
+    mqtt_client.connect()
+  except OSError as e:
+    logging.error(f" - mqtt broker not reached")
+    return False
 
   for cache_file in os.ilistdir("uploads"):
     cache_file = cache_file[0]
